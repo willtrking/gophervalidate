@@ -54,13 +54,15 @@ userID := 1
 userAge := 18
 
 validator = gophervalidate.MakeValidator()
-//We need to make sure we add how many validators will be userID
 
+//We need to make sure we add how many validators will be userID
 validator.AddValidators(2)
+
 validator.CheckBool("age", 18 > 21, "You're underage, must be at least %d!", 21)
 go RealHeavyValidator(userID, validator)
 
 otherUserId := 2
+
 //Oops forgot one! Can always increment, incrementation is automic
 validator.AddValidators(1)
 go RealHeavyValidator(otherUserId, validator)
