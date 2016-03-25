@@ -53,7 +53,7 @@ func InsaneValidator(userID int, v *gophervalidate.Validator) {
 userID := 1
 userAge := 18
 
-validator = gophervalidate.MakeValidator()
+validator := gophervalidate.MakeValidator()
 
 //We need to make sure we add how many validators will be userID
 validator.AddValidators(2)
