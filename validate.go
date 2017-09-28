@@ -11,13 +11,13 @@ type Validator struct {
 }
 
 type ValidatorMessage struct {
-	key string
-	msg string
+	key     string
+	msg     string
 	isError bool
 }
 
 //Create our validator, create a channel to take errors
-func MakeValidator() *Validator {
+func NewValidator() *Validator {
 
 	v := new(Validator)
 	v.validatorChan = make(chan ValidatorMessage)
@@ -57,14 +57,14 @@ func (v *Validator) CheckBool(key string, c bool, errMsg string, a ...interface{
 }
 
 //Wait for our validation to be done, and consume the channel
-func (v *Validator) Validate() *map[string][]string {
+func (v *Validator) Validate() map[string][]string {
 
 	errMap := make(map[string][]string)
 
 	for i := uint32(0); i < v.chanSize; i++ {
 
 		msg := <-v.validatorChan
-		fmt.Println("GOT ONE")
+
 		if msg.isError {
 			if val, ok := errMap[msg.key]; ok {
 				errMap[msg.key] = append(val, msg.msg)
@@ -74,7 +74,7 @@ func (v *Validator) Validate() *map[string][]string {
 		}
 	}
 
-	return &errMap
+	return errMap
 
 }
 
@@ -108,7 +108,7 @@ func (v *Validator) WaitForKey(key string) *ValidatorMessage {
 }
 
 //Same as validate, but also close
-func (v *Validator) ValidateAndClose() *map[string][]string {
+func (v *Validator) ValidateAndClose() map[string][]string {
 	//Close out when we're done
 	defer v.Close()
 	return v.Validate()
@@ -122,8 +122,8 @@ func (v *Validator) Close() {
 	*v = Validator{}
 }
 
-//Reset validator to state from MakeValidator
+//Reset validator to state from NewValidator
 func (v *Validator) Reset() {
 	v.Close()
-	v = MakeValidator()
+	v = NewValidator()
 }
